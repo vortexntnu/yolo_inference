@@ -7,7 +7,7 @@ ros2 launch yolo_inference yolo_inference.launch.py
 ```
 You can also select the compute device with the `device` argument:
 ```bash
-# Force inference on GPU
+# Force inference on CPU
 ros2 launch yolo_inference yolo_inference.launch.py device:=cpu
 
 # Use GPU 0
@@ -18,7 +18,7 @@ ros2 launch yolo_inference yolo_inference.launch.py device:=0
 
 ## Topics
 ### Subscribed
-- `sensor_msgs/Image` - Input color image
+- `sensor_msgs/Image` - Input color image,
 ### Published
 - `/yolo/detections` -> `vision_msgs/Detection2DArray`
 - `/yolo/annotated` -> `sensor_msgs/Image`
