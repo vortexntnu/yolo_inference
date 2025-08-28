@@ -45,6 +45,7 @@ class YoloInference(Node):
             'color_image_sub_topic': '_',
             'yolo_detections_pub_topic': '_',
             'yolo_annotated_pub_topic': '_',
+            'device': '_',
         }
 
         for name, default in params.items():
@@ -69,7 +70,9 @@ class YoloInference(Node):
     def on_image(self, msg: Image):
         frame = self.bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
 
-        detections, annot = yolo_utils.process_frame(frame, self.model, self.conf)
+        detections, annot = yolo_utils.process_frame(
+            frame, self.model, self.conf, self.device
+        )
 
         # Convert detections into Detection2DArray
         det_array = Detection2DArray()

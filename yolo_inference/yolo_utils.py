@@ -9,14 +9,14 @@ def load_model(model_path, conf):
     return model, conf
 
 
-def process_frame(frame, model, conf):
+def process_frame(frame, model, conf, device):
     """Run YOLO inference on an OpenCV frame.
 
     Returns:
         detections: list of tuples (x1, y1, x2, y2, score, class_id)
         annotated: frame with drawn boxes and labels
     """
-    results = model.predict(frame, conf=conf, verbose=False)
+    results = model.predict(frame, conf=conf, verbose=False, device=device)
     detections = []
     annotated = frame.copy()
 
