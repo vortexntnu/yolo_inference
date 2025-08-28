@@ -6,32 +6,51 @@ from ament_index_python.packages import get_package_share_directory
 from launch_ros.actions import Node
 
 from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument, OpaqueFunction
+from launch.substitutions import LaunchConfiguration
 
-yolo_params = os.path.join(
-    get_package_share_directory('yolo_inference'),
-    'config/yolo_inference_params.yaml',
-)
+ALLOWED_DEVICES = ['cpu', '0']
 
 
-def generate_launch_description() -> LaunchDescription:
-    """Generates a launch description for the yolo_inference node.
+def validate_device(device: str):
+    if device not in ALLOWED_DEVICES:
+        raise RuntimeError(
+            f"Invalid device '{device}'. Choose one of: {', '.join(ALLOWED_DEVICES)}"
+        )
 
-    This function creates a ROS 2 launch description that includes the
-    yolo_inference node. The node is configured to use the
-    parameters specified in the 'param_yolo_inference.yaml' file.
 
-    Returns:
-        LaunchDescription: A ROS 2 launch description containing the
-        yolo_inference node.
+def launch_setup(context, *args, **kwargs):
+    device = LaunchConfiguration('device').perform(context)
+    validate_device(device)
 
-    """
-    yolo_inference_node = Node(
+    yolo_params = os.path.join(
+        get_package_share_directory('yolo_inference'),
+        'config/yolo_inference_params.yaml',
+    )
+
+    yolo_node = Node(
         package='yolo_inference',
         executable='yolo_inference_node.py',
         name='yolo_inference',
         namespace='yolo',
         output='screen',
-        parameters=[yolo_params],
+        parameters=[
+            yolo_params,
+            {'device': device},
+        ],
     )
 
-    return LaunchDescription([yolo_inference_node])
+    return [yolo_node]
+
+
+def generate_launch_description():
+    return LaunchDescription(
+        [
+            DeclareLaunchArgument(
+                'device',
+                default_value='0',
+                description='Device to run YOLO inference on (\'0\' for GPU or \'cpu\')',
+            ),
+            OpaqueFunction(function=launch_setup),
+        ]
+    )
