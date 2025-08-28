@@ -1,7 +1,8 @@
 /**:
   ros__parameters:
-    yolo_model: "best_v9_medium.pt"
-    model_conf: 0.25
-    color_image_sub_topic: "/zed_node/left/image_rect_color"
-    yolo_detections_pub_topic: "/yolo/detections"
-    yolo_annotated_pub_topic: "/yolo/annotated"
+    yolo_model: 'best_v9_medium.pt'
+    model_conf: 0.1
+    color_image_sub_topic: '/cam/image_color'
+    yolo_detections_pub_topic: '/yolo/detections'
+    yolo_annotated_pub_topic: '/yolo/annotated'
+    device: '0'
